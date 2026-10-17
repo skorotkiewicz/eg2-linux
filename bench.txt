@@ -1,0 +1,30 @@
+(lm-model) ➜  eg2-linux python server.py --host 0.0.0.0 --port 8088 --device cuda
+Warming models on cuda:0...
+Ready: http://0.0.0.0:8088/transcribe
+Window 1/508: 3.10 s
+Window 2/508: 0.71 s
+...
+Window 505/508: 0.38 s
+Window 506/508: 0.38 s
+Window 507/508: 0.38 s
+Window 508/508: 0.37 s
+
+curl --fail-with-body \
+  -H 'Content-Type: application/octet-stream' \
+  --data-binary @Harry.Potter.and.the.Sorcerers.Stone.2001.mp3 \
+  'http://192.168.0.124:8088/transcribe?format=json'
+
+(.venv) ✗ ls -sh transcript-hp1.json
+452K transcript-hp1.json
+
+(.venv) ✗ .venv/bin/python tools/check_accuracy.py English-hp1.srt transcript-hp1.json
+Word error rate: 31.32% (lower is better)
+Reference words: 8346
+Transcript words: 8111
+Matched words: 6262
+Substitutions: 1319
+Deletions: 765
+Insertions: 530
+WER = (substitutions + deletions + insertions) / reference words
+Case, punctuation and subtitle tags are ignored; numbers and contractions are not expanded.
+Subtitle wording may differ from speech; this is not a verbatim-reference benchmark.
